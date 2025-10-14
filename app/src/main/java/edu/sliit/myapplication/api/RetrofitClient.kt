@@ -12,9 +12,9 @@ import javax.net.ssl.X509TrustManager
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    // Updated to use actual computer IP: 192.168.1.54
-    // This works for both emulator and physical devices on the same network
-    private const val BASE_URL = "https://192.168.1.54:7170/"
+    // Use your PC's Wi‑Fi IP so a physical device can reach the backend
+    // Source: ipconfig → Wi‑Fi IPv4 Address: 192.168.8.100
+    private const val BASE_URL = "https://192.168.8.100:7170/"
 
     // Create a trust manager that does not validate certificate chains
     private val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
