@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary">
+
+    <TextView
+        android:id="@+id/appNameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RechangeMe"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="@color/surface"
+        android:alpha="0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/lottieAnimation"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimation"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        app:lottie_rawRes="@raw/splash_animation"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:alpha="0"
+        app:layout_constraintTop_toBottomOf="@id/appNameText"
+        app:layout_constraintBottom_toTopOf="@id/designerText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/designerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Designed by Arunalu Bamunusinghe"
+        android:textSize="14sp"
+        android:textColor="@color/surface"
+        android:alpha="0"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lottieAnimation" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
