@@ -24,23 +24,64 @@ class ScanViewModel : ViewModel() {
     private val _currentToken = MutableLiveData<String>()
     val currentToken: LiveData<String> = _currentToken
     
+    private val _currentReservationId = MutableLiveData<String>()
+    val currentReservationId: LiveData<String> = _currentReservationId
+    
     fun scanQRCode(token: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _currentToken.value = token
             val result = repository.scanQRCode(token)
+            
+            // Store reservation ID from response
+            result.getOrNull()?.let { response ->
+                _currentReservationId.value = response.id
+            }
+            
             _scanResult.value = result
             _isLoading.value = false
         }
     }
     
     fun confirmAction(action: String) {
-        val token = _currentToken.value ?: return
+        val reservationId = _currentReservationId.value
+        
+        android.util.Log.d("ScanViewModel", "confirmAction called with action='$action', reservationId='$reservationId'")
+        
+        if (reservationId.isNullOrEmpty()) {
+            android.util.Log.e("ScanViewModel", "No reservation ID found!")
+            _confirmResult.value = Result.failure(Exception("No reservation ID found"))
+            return
+        }
+        
         viewModelScope.launch {
             _isLoading.value = true
-            val result = repository.confirmAction(token, action)
+            
+            val result = when (action.lowercase()) {
+                "start" -> {
+                    android.util.Log.d("ScanViewModel", "Calling startBooking for ID: $reservationId")
+                    repository.startBooking(reservationId)
+                }
+                "end", "complete" -> {
+                    android.util.Log.d("ScanViewModel", "Calling endBooking (complete) for ID: $reservationId")
+                    repository.endBooking(reservationId)
+                }
+                "cancel" -> {
+                    android.util.Log.d("ScanViewModel", "Calling cancelBooking for ID: $reservationId")
+                    repository.cancelBooking(reservationId)
+                }
+                else -> {
+                    android.util.Log.d("ScanViewModel", "Using fallback confirmAction for action: $action")
+                    // Fallback to old confirm action for backward compatibility
+                    val token = _currentToken.value ?: ""
+                    repository.confirmAction(token, action)
+                }
+            }
+            
             _confirmResult.value = result
             _isLoading.value = false
+            
+            android.util.Log.d("ScanViewModel", "confirmAction result: ${if (result.isSuccess) "SUCCESS" else "FAILURE"}")
         }
     }
     
@@ -48,5 +89,6 @@ class ScanViewModel : ViewModel() {
         _scanResult.value = null
         _confirmResult.value = null
         _currentToken.value = null
+        _currentReservationId.value = null
     }
 }

@@ -1,49 +1,52 @@
 package edu.sliit.myapplication.data.network
 
-import java.security.cert.X509Certificate
+import android.content.Context
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
 
 object RetrofitClient {
-    
-    // Match the API client to the same host and protocol (HTTPS)
-    private const val BASE_URL = "https://192.168.8.100:7170/"
-    
+
+    private var appContext: Context? = null
+
+    fun initialize(context: Context) {
+        appContext = context.applicationContext
+    }
+
+    // Updated to use the correct API endpoint for QR scanning
+    private const val BASE_URL = "http://192.168.8.100:5220/"
+
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
-    
-    // Trust all certs for local dev HTTPS (self-signed). Do NOT use in production.
-    private val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-        override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
-        override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
-        override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-    })
 
-    private val sslContext = SSLContext.getInstance("SSL").apply {
-        init(null, trustAllCerts, java.security.SecureRandom())
-    }
+    // Simple HTTP client for the API
+    private val okHttpClient: OkHttpClient
+        get() {
+            val builder = OkHttpClient.Builder()
+                .addInterceptor(loggingInterceptor)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+            
+            // Add auth interceptor if context is available
+            appContext?.let {
+                builder.addInterceptor(AuthInterceptor(it))
+            }
+            
+            return builder.build()
+        }
 
-    private val okHttpClient = OkHttpClient.Builder()
-        .sslSocketFactory(sslContext.socketFactory, trustAllCerts[0] as X509TrustManager)
-        .hostnameVerifier { _, _ -> true }
-        .addInterceptor(loggingInterceptor)
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .build()
-    
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-    
-    val apiService: ApiService = retrofit.create(ApiService::class.java)
+    private val retrofit: Retrofit
+        get() = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+    val apiService: ApiService
+        get() = retrofit.create(ApiService::class.java)
 }

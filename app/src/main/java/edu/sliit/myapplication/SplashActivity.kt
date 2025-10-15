@@ -7,6 +7,7 @@ import android.os.Looper
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import edu.sliit.myapplication.databinding.ActivitySplashBinding
+import edu.sliit.myapplication.data.network.RetrofitClient
 import edu.sliit.myapplication.utils.UserPreferences
 
 class SplashActivity : AppCompatActivity() {
@@ -19,6 +20,9 @@ class SplashActivity : AppCompatActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Initialize RetrofitClient with context for authentication
+        RetrofitClient.initialize(this)
+        
         userPreferences = UserPreferences(this)
 
         startAnimations()

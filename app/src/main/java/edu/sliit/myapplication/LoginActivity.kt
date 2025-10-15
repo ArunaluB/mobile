@@ -7,7 +7,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import edu.sliit.myapplication.api.RetrofitClient
+import edu.sliit.myapplication.data.network.RetrofitClient
 import edu.sliit.myapplication.databinding.ActivityLoginBinding
 import edu.sliit.myapplication.models.LoginRequest
 import edu.sliit.myapplication.utils.UserPreferences
@@ -89,7 +89,7 @@ class LoginActivity : AppCompatActivity() {
                 val loginRequest = LoginRequest(username, password)
                 android.util.Log.d("LoginActivity", "Attempting login for user: $username")
                 
-                val response = RetrofitClient.authApi.login(loginRequest)
+                val response = RetrofitClient.apiService.login(loginRequest)
                 
                 android.util.Log.d("LoginActivity", "Response code: ${response.code()}")
                 android.util.Log.d("LoginActivity", "Response message: ${response.message()}")

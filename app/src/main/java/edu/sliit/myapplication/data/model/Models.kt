@@ -8,27 +8,38 @@ data class ScanRequest(
 )
 
 data class ScanResponse(
-    @SerializedName("reservationId")
-    val reservationId: String,
-    
-    @SerializedName("stationId")
-    val stationId: String,
-    
-    @SerializedName("status")
-    val status: String,
-    
-    @SerializedName("startTimeUtc")
-    val startTimeUtc: String,
-    
-    @SerializedName("endTimeUtc")
-    val endTimeUtc: String,
+    @SerializedName("id")
+    val id: String,
     
     @SerializedName("ownerNic")
     val ownerNic: String?,
     
+    @SerializedName("stationId")
+    val stationId: String,
+    
+    @SerializedName("startUtc")
+    val startUtc: String,
+    
+    @SerializedName("endUtc")
+    val endUtc: String,
+    
+    @SerializedName("status")
+    val status: String,
+    
+    @SerializedName("startedUtc")
+    val startedUtc: String?,
+    
+    @SerializedName("endedUtc")
+    val endedUtc: String?,
+    
     @SerializedName("nextActions")
     val nextActions: List<String>
-)
+) {
+    // Helper properties for backward compatibility
+    val reservationId: String get() = id
+    val startTimeUtc: String get() = startUtc
+    val endTimeUtc: String get() = endUtc
+}
 
 data class ConfirmRequest(
     @SerializedName("token")
