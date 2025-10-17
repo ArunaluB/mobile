@@ -1,19 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#6200EE</color>
-    <color name="primary_dark">#3700B3</color>
-    <color name="accent">#03DAC5</color>
-    <color name="background">#F5F5F5</color>
-    <color name="surface">#FFFFFF</color>
-    <color name="error">#B00020</color>
-    <color name="success">#4CAF50</color>
-    <color name="text_primary">#212121</color>
-    <color name="text_secondary">#757575</color>
+    <!-- Primary Brand Colors - Inspired by ReChargeMe Design -->
+    <color name="primary">#26D0CE</color>
+    <color name="primary_dark">#1DB9B0</color>
+    <color name="primary_variant">#00BFA5</color>
+    <color name="accent">#26D0CE</color>
+    <color name="accent_light">#5DE3E1</color>
     
-    <!-- Status Colors -->
-    <color name="status_approved">#4CAF50</color>
-    <color name="status_in_progress">#FF9800</color>
-    <color name="status_completed">#2196F3</color>
-    <color name="status_cancelled">#F44336</color>
-    <color name="status_pending">#9E9E9E</color>
+    <!-- Background Colors - Modern Dark Theme -->
+    <color name="background">#0A0E27</color>
+    <color name="background_light">#121826</color>
+    <color name="surface">#1E2337</color>
+    <color name="surface_elevated">#2A3142</color>
+    <color name="surface_variant">#252B3D</color>
+    
+    <!-- Card & Container Colors -->
+    <color name="card_background">#1E2337</color>
+    <color name="card_background_dark">#161A2E</color>
+    <color name="card_stroke">#2D3548</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#9CA3AF</color>
+    <color name="text_tertiary">#6B7280</color>
+    <color name="text_hint">#4B5563</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    
+    <!-- Accent & Highlight Colors -->
+    <color name="teal_accent">#26D0CE</color>
+    <color name="teal_light">#5DE3E1</color>
+    <color name="teal_dark">#1DB9B0</color>
+    <color name="electric_blue">#4A90E2</color>
+    <color name="electric_purple">#7B68EE</color>
+    
+    <!-- Gradient Colors -->
+    <color name="gradient_start">#26D0CE</color>
+    <color name="gradient_mid">#1DB9B0</color>
+    <color name="gradient_end">#00A896</color>
+    <color name="gradient_purple_start">#7B68EE</color>
+    <color name="gradient_purple_end">#5A4FCF</color>
+    
+    <!-- Status Colors - Modern Palette -->
+    <color name="status_approved">#00E676</color>
+    <color name="status_in_progress">#FFB300</color>
+    <color name="status_completed">#26D0CE</color>
+    <color name="status_cancelled">#FF5252</color>
+    <color name="status_pending">#78909C</color>
+    
+    <!-- Semantic Colors -->
+    <color name="success">#00E676</color>
+    <color name="success_light">#69F0AE</color>
+    <color name="error">#FF5252</color>
+    <color name="error_light">#FF8A80</color>
+    <color name="warning">#FFB300</color>
+    <color name="warning_light">#FFD54F</color>
+    <color name="info">#4A90E2</color>
+    <color name="info_light">#82B1FF</color>
+    
+    <!-- UI Element Colors -->
+    <color name="divider">#2D3548</color>
+    <color name="divider_light">#374151</color>
+    <color name="overlay">#80000000</color>
+    <color name="overlay_dark">#CC000000</color>
+    <color name="ripple">#4026D0CE</color>
+    
+    <!-- Button Colors -->
+    <color name="button_primary">#26D0CE</color>
+    <color name="button_primary_pressed">#1DB9B0</color>
+    <color name="button_secondary">#2A3142</color>
+    <color name="button_disabled">#374151</color>
+    
+    <!-- Icon Colors -->
+    <color name="icon_primary">#26D0CE</color>
+    <color name="icon_secondary">#9CA3AF</color>
+    <color name="icon_on_surface">#FFFFFF</color>
+    
+    <!-- Battery & Progress Colors -->
+    <color name="battery_full">#00E676</color>
+    <color name="battery_medium">#FFB300</color>
+    <color name="battery_low">#FF5252</color>
+    <color name="progress_bar">#26D0CE</color>
+    <color name="progress_background">#2A3142</color>
+    
+    <!-- Weather & Map Colors -->
+    <color name="weather_sunny">#FFB300</color>
+    <color name="map_background">#1E2337</color>
+    <color name="map_marker">#26D0CE</color>
+    
+    <!-- Pure Colors for Reference -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
 </resources>

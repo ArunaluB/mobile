@@ -1,13 +1,178 @@
 <resources>
-    <style name="Theme.RechangeMe" parent="Theme.Material3.Light.NoActionBar">
+    <!-- Base Application Theme - Modern Dark Theme with Teal Accent -->
+    <style name="Theme.RechangeMe" parent="Theme.Material3.Dark.NoActionBar">
+        <!-- Primary Brand Colors -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorPrimaryVariant">@color/primary_variant</item>
+        <item name="colorOnPrimary">@color/text_on_primary</item>
+        
+        <!-- Accent Colors -->
         <item name="colorAccent">@color/accent</item>
-        <item name="android:statusBarColor">@color/primary</item>
+        <item name="colorSecondary">@color/accent</item>
+        <item name="colorSecondaryVariant">@color/teal_dark</item>
+        <item name="colorOnSecondary">@color/white</item>
+        
+        <!-- Surface & Background -->
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorOnBackground">@color/text_primary</item>
+        
+        <!-- Status Bar & Navigation -->
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        
+        <!-- Error Colors -->
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/white</item>
+        
+        <!-- Window Attributes -->
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:fitsSystemWindows">false</item>
+        
+        <!-- Material Components Styling -->
+        <item name="materialCardViewStyle">@style/Widget.App.CardView</item>
+        <item name="materialButtonStyle">@style/Widget.App.Button</item>
+        <item name="textInputStyle">@style/Widget.App.TextInputLayout</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+        
+        <!-- Text Appearance -->
+        <item name="textAppearanceHeadline1">@style/TextAppearance.App.Headline1</item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.App.Headline2</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.App.Body1</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.App.Body2</item>
+        
+        <!-- Ripple Effect -->
+        <item name="android:colorControlHighlight">@color/ripple</item>
     </style>
 
-    <style name="Theme.RechangeMe.Splash" parent="Theme.Material3.Light.NoActionBar">
-        <item name="android:windowBackground">@color/primary</item>
-        <item name="android:statusBarColor">@color/primary</item>
+    <!-- Splash Screen Theme -->
+    <style name="Theme.RechangeMe.Splash" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
+    
+    <!-- Material Card View Style -->
+    <style name="Widget.App.CardView" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/card_background</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">8dp</item>
+        <item name="strokeColor">@color/card_stroke</item>
+        <item name="strokeWidth">0dp</item>
+    </style>
+    
+    <!-- Modern Elevated Card -->
+    <style name="Widget.App.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/surface_elevated</item>
+        <item name="cardCornerRadius">20dp</item>
+        <item name="cardElevation">12dp</item>
+    </style>
+    
+    <!-- Flat Card Style -->
+    <style name="Widget.App.CardView.Flat">
+        <item name="cardBackgroundColor">@color/surface</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeColor">@color/divider</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+    
+    <!-- Primary Button Style -->
+    <style name="Widget.App.Button" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/button_primary</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.02</item>
+        <item name="elevation">4dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+    
+    <!-- Secondary Button Style -->
+    <style name="Widget.App.Button.Secondary">
+        <item name="backgroundTint">@color/button_secondary</item>
+        <item name="strokeColor">@color/primary</item>
+        <item name="strokeWidth">2dp</item>
+    </style>
+    
+    <!-- Outlined Button Style -->
+    <style name="Widget.App.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/primary</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textColor">@color/primary</item>
+        <item name="rippleColor">@color/ripple</item>
+    </style>
+    
+    <!-- Text Input Layout Style -->
+    <style name="Widget.App.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/primary</item>
+        <item name="boxStrokeWidth">2dp</item>
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="hintTextColor">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+        <item name="boxBackgroundColor">@color/surface</item>
+    </style>
+    
+    <!-- Bottom Navigation Style -->
+    <style name="Widget.App.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="backgroundTint">@color/surface_elevated</item>
+        <item name="itemIconTint">@color/bottom_nav_color</item>
+        <item name="itemTextColor">@color/bottom_nav_color</item>
+        <item name="itemRippleColor">@color/ripple</item>
+        <item name="elevation">16dp</item>
+        <item name="labelVisibilityMode">labeled</item>
+    </style>
+    
+    <!-- Text Appearances -->
+    <style name="TextAppearance.App.Headline1" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="fontFamily">sans-serif-black</item>
+    </style>
+    
+    <style name="TextAppearance.App.Headline2" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+    
+    <style name="TextAppearance.App.Body1" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="fontFamily">sans-serif</item>
+    </style>
+    
+    <style name="TextAppearance.App.Body2" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="fontFamily">sans-serif-light</item>
+    </style>
+    
+    <!-- Chip Style -->
+    <style name="Widget.App.Chip" parent="Widget.Material3.Chip.Assist">
+        <item name="chipBackgroundColor">@color/surface_elevated</item>
+        <item name="chipStrokeColor">@color/primary</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+    
+    <!-- Progress Bar Style -->
+    <style name="Widget.App.ProgressBar" parent="Widget.Material3.LinearProgressIndicator">
+        <item name="indicatorColor">@color/progress_bar</item>
+        <item name="trackColor">@color/progress_background</item>
+        <item name="trackCornerRadius">8dp</item>
+        <item name="trackThickness">8dp</item>
+    </style>
+
 </resources>

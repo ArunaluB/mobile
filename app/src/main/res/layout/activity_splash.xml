@@ -4,32 +4,110 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary">
+    android:background="@color/background">
+
+    <!-- Gradient Background Circle -->
+    <View
+        android:id="@+id/bgCircle1"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:background="@drawable/bg_circle_accent"
+        android:alpha="0.1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="-100dp"
+        android:layout_marginEnd="-100dp" />
+
+    <View
+        android:id="@+id/bgCircle2"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/bg_circle_accent"
+        android:alpha="0.08"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="-80dp"
+        android:layout_marginStart="-80dp" />
+
+    <!-- Main Logo Circle -->
+    <View
+        android:id="@+id/logoCircle"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:background="@drawable/bg_gradient_primary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:alpha="0" />
+
+    <TextView
+        android:id="@+id/logoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="R"
+        android:textSize="72sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:fontFamily="sans-serif-black"
+        android:alpha="0"
+        app:layout_constraintTop_toTopOf="@id/logoCircle"
+        app:layout_constraintBottom_toBottomOf="@id/logoCircle"
+        app:layout_constraintStart_toStartOf="@id/logoCircle"
+        app:layout_constraintEnd_toEndOf="@id/logoCircle" />
 
     <TextView
         android:id="@+id/appNameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="RechangeMe"
-        android:textSize="32sp"
+        android:text="ReChargeMe"
+        android:textSize="36sp"
         android:textStyle="bold"
-        android:textColor="@color/surface"
+        android:textColor="@color/text_primary"
+        android:fontFamily="sans-serif-black"
+        android:letterSpacing="0.02"
         android:alpha="0"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logoCircle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/lottieAnimation"
-        app:layout_constraintVertical_chainStyle="packed" />
+        android:layout_marginTop="32dp" />
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottieAnimation"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        app:lottie_rawRes="@raw/splash_animation"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
+    <TextView
+        android:id="@+id/taglineText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Power your journey"
+        android:textSize="16sp"
+        android:textColor="@color/text_secondary"
+        android:fontFamily="sans-serif-light"
         android:alpha="0"
         app:layout_constraintTop_toBottomOf="@id/appNameText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp" />
+
+    <!-- Loading Indicator -->
+    <ProgressBar
+        android:id="@+id/loadingProgress"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:indeterminateTint="@color/primary"
+        android:alpha="0"
+        app:layout_constraintTop_toBottomOf="@id/taglineText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="40dp" />
+
+    <TextView
+        android:id="@+id/versionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Version 1.0.0"
+        android:textSize="12sp"
+        android:textColor="@color/text_tertiary"
+        android:fontFamily="sans-serif-light"
+        android:alpha="0"
+        android:layout_marginBottom="40dp"
         app:layout_constraintBottom_toTopOf="@id/designerText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -39,13 +117,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Designed by Arunalu Bamunusinghe"
-        android:textSize="14sp"
-        android:textColor="@color/surface"
+        android:textSize="13sp"
+        android:textColor="@color/text_secondary"
+        android:fontFamily="sans-serif-medium"
         android:alpha="0"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lottieAnimation" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

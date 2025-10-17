@@ -40,21 +40,39 @@ class SplashActivity : AppCompatActivity() {
 
     private fun startAnimations() {
         // Fade in animation
-        binding.appNameText.animate()
+        binding.logoCircle.animate()
             .alpha(1f)
-            .setDuration(1000)
+            .setDuration(900)
             .start()
 
-        binding.lottieAnimation.animate()
+        binding.logoText.animate()
             .alpha(1f)
-            .setDuration(1000)
-            .setStartDelay(300)
+            .setDuration(900)
+            .setStartDelay(200)
+            .start()
+
+        binding.appNameText.animate()
+            .alpha(1f)
+            .setDuration(900)
+            .setStartDelay(400)
+            .start()
+
+        binding.taglineText.animate()
+            .alpha(1f)
+            .setDuration(900)
+            .setStartDelay(600)
+            .start()
+
+        binding.loadingProgress.animate()
+            .alpha(1f)
+            .setDuration(900)
+            .setStartDelay(800)
             .start()
 
         binding.designerText.animate()
             .alpha(1f)
-            .setDuration(1000)
-            .setStartDelay(600)
+            .setDuration(900)
+            .setStartDelay(1000)
             .start()
     }
 }

@@ -106,8 +106,8 @@ class HomeFragment : Fragment() {
             repeatMode = ObjectAnimator.REVERSE
         }
         
-        // Rotation animation for header icon
-        val rotate = ObjectAnimator.ofFloat(binding.headerIcon, "rotation", 0f, 360f).apply {
+        // Rotation animation for header decorative circle (replaced headerIcon)
+        val rotate = ObjectAnimator.ofFloat(binding.headerCircle, "rotation", 0f, 360f).apply {
             duration = 10000
             repeatCount = ObjectAnimator.INFINITE
         }

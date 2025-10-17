@@ -160,15 +160,18 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun animateViews() {
-        binding.loginAnimation.alpha = 0f
-        binding.welcomeText.alpha = 0f
-        binding.subtitleText.alpha = 0f
+        // Updated to new layout IDs (logo and title elements)
+        binding.logoCircle.alpha = 0f
+        binding.logoText.alpha = 0f
+        binding.appTitle.alpha = 0f
+        binding.appSubtitle.alpha = 0f
         binding.loginCard.alpha = 0f
 
-        binding.loginAnimation.animate().alpha(1f).setDuration(800).start()
-        binding.welcomeText.animate().alpha(1f).setDuration(800).setStartDelay(200).start()
-        binding.subtitleText.animate().alpha(1f).setDuration(800).setStartDelay(400).start()
-        binding.loginCard.animate().alpha(1f).setDuration(800).setStartDelay(600).start()
+        binding.logoCircle.animate().alpha(1f).setDuration(800).start()
+        binding.logoText.animate().alpha(1f).setDuration(800).setStartDelay(200).start()
+        binding.appTitle.animate().alpha(1f).setDuration(800).setStartDelay(400).start()
+        binding.appSubtitle.animate().alpha(1f).setDuration(800).setStartDelay(600).start()
+        binding.loginCard.animate().alpha(1f).setDuration(800).setStartDelay(800).start()
     }
     
     private fun showKeyboard() {
