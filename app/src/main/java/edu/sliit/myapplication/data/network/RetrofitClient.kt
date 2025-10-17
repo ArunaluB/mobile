@@ -17,7 +17,7 @@ object RetrofitClient {
     }
 
     // Updated to use the correct API endpoint for QR scanning
-    private const val BASE_URL = "http://192.168.8.100:5220/"
+    private const val BASE_URL = "http://192.168.8.103:5000/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
