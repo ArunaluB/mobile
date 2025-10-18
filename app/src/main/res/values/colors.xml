@@ -1,19 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#6200EE</color>
-    <color name="primary_dark">#3700B3</color>
-    <color name="accent">#03DAC5</color>
-    <color name="background">#F5F5F5</color>
-    <color name="surface">#FFFFFF</color>
-    <color name="error">#B00020</color>
-    <color name="success">#4CAF50</color>
-    <color name="text_primary">#212121</color>
-    <color name="text_secondary">#757575</color>
+    <!-- ========== EV Hub Base / Background Colors ========== -->
+    <color name="background_primary">#000000</color>
+    <color name="background_deep">#0E0D0A</color>
+    <color name="background_overlay">#201F19</color>
+    <color name="background_panel">#343432</color>
+    <color name="background_card">#1A1A1A</color>
     
-    <!-- Status Colors -->
-    <color name="status_approved">#4CAF50</color>
-    <color name="status_in_progress">#FF9800</color>
-    <color name="status_completed">#2196F3</color>
-    <color name="status_cancelled">#F44336</color>
-    <color name="status_pending">#9E9E9E</color>
+    <!-- ========== Primary Brand / Accent Colors ========== -->
+    <color name="primary">#4AF13C</color>
+    <color name="primary_dark">#00FF66</color>
+    <color name="accent">#4AF13C</color>
+    <color name="accent_bright">#00FF66</color>
+    <color name="accent_muted">#8CA59F</color>
+    
+    <!-- ========== Secondary Accent Colors ========== -->
+    <color name="secondary_blue">#00AFFF</color>
+    <color name="secondary_pink">#FF176A</color>
+    <color name="secondary_purple">#836DFD</color>
+    
+    <!-- ========== Text Colors ========== -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#515353</color>
+    <color name="text_tertiary">#8CA59F</color>
+    
+    <!-- ========== Surface & UI Element Colors ========== -->
+    <color name="surface">#201F19</color>
+    <color name="surface_elevated">#343432</color>
+    <color name="surface_variant">#515353</color>
+    
+    <!-- ========== Legacy Support (kept for compatibility) ========== -->
+    <color name="background">#000000</color>
+    <color name="primary_variant">#00FF66</color>
+    <color name="error">#FF176A</color>
+    <color name="success">#00FF66</color>
+    
+    <!-- ========== Status Colors (EV Theme) ========== -->
+    <color name="status_approved">#00FF66</color>
+    <color name="status_in_progress">#4AF13C</color>
+    <color name="status_completed">#00AFFF</color>
+    <color name="status_cancelled">#FF176A</color>
+    <color name="status_pending">#8CA59F</color>
+    
+    <!-- ========== Gradient Colors ========== -->
+    <color name="gradient_start">#4AF13C</color>
+    <color name="gradient_mid">#00FF66</color>
+    <color name="gradient_end">#00AFFF</color>
+    
+    <!-- ========== Additional Accent Tones ========== -->
+    <color name="neon_green">#4AF13C</color>
+    <color name="bright_green">#00FF66</color>
+    <color name="electric_blue">#00AFFF</color>
+    <color name="vivid_pink">#FF176A</color>
+    <color name="purple_blue">#836DFD</color>
+    
+    <!-- ========== Transparent Overlays ========== -->
+    <color name="overlay_dark">#CC000000</color>
+    <color name="overlay_light">#33FFFFFF</color>
+    <color name="overlay_green">#334AF13C</color>
 </resources>

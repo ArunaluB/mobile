@@ -106,12 +106,6 @@ class HomeFragment : Fragment() {
             repeatMode = ObjectAnimator.REVERSE
         }
         
-        // Rotation animation for header icon
-        val rotate = ObjectAnimator.ofFloat(binding.headerIcon, "rotation", 0f, 360f).apply {
-            duration = 10000
-            repeatCount = ObjectAnimator.INFINITE
-        }
-        
         // Scale animations for icons
         val scaleIcons = listOf(
             binding.iconQuickBooking,
@@ -139,7 +133,6 @@ class HomeFragment : Fragment() {
         
         translateY1.start()
         translateY2.start()
-        rotate.start()
     }
     
     private fun showSlotManagementDialog() {

@@ -5,20 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@color/background">
+    android:background="@color/background_primary">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Header Card with Gradient -->
+        <!-- Header Card with Neon Gradient -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/headerCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="8dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="12dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/primary"
+            app:cardBackgroundColor="@color/surface"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginBottom="16dp">
 
@@ -27,19 +30,38 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/gradient_header_background"
-                android:padding="24dp">
+                android:padding="28dp">
 
-                <!-- Profile Avatar -->
-                <TextView
-                    android:id="@+id/profileAvatar"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                <!-- Neon glow effect -->
+                <View
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="-40dp"
+                    android:layout_marginEnd="-20dp"
+                    android:background="@drawable/gradient_green_card"
+                    android:alpha="0.2" />
+
+                <!-- Profile Avatar with Gradient Border -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/circle_background"
-                    android:gravity="center"
-                    android:textSize="36sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/white" />
+                    app:cardCornerRadius="44dp"
+                    app:cardElevation="0dp"
+                    android:layout_marginTop="-60dp">
+
+                    <TextView
+                        android:id="@+id/profileAvatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/gradient_green_card"
+                        android:gravity="center"
+                        android:textSize="40sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/background_primary" />
+
+                </androidx.cardview.widget.CardView>
 
                 <!-- Username -->
                 <TextView
@@ -48,27 +70,37 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Username"
-                    android:textSize="24sp"
+                    android:textSize="26sp"
                     android:textStyle="bold"
-                    android:textColor="@android:color/white"
-                    android:layout_marginTop="12dp" />
+                    android:textColor="@color/text_primary"
+                    android:fontFamily="sans-serif-black"
+                    android:layout_marginTop="16dp" />
 
                 <!-- Role Badge -->
-                <TextView
-                    android:id="@+id/profileRole"
+                <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Role"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/white"
-                    android:background="@drawable/status_badge_bg"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:paddingTop="6dp"
-                    android:paddingBottom="6dp"
-                    android:layout_marginTop="8dp"
-                    android:alpha="0.9" />
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    android:layout_marginTop="12dp">
+
+                    <TextView
+                        android:id="@+id/profileRole"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Role"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/background_primary"
+                        android:background="@drawable/button_primary_gradient"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:fontFamily="sans-serif-medium" />
+
+                </androidx.cardview.widget.CardView>
 
             </LinearLayout>
 
@@ -79,8 +111,11 @@
             android:id="@+id/userInfoCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/accent_muted"
+            app:cardBackgroundColor="@color/surface"
             app:layout_constraintTop_toBottomOf="@id/headerCard"
             android:layout_marginTop="16dp">
 
@@ -90,14 +125,30 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Personal Information"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="16dp" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@android:drawable/ic_menu_info_details"
+                        android:tint="@color/primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Personal Information"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:fontFamily="sans-serif-black"
+                        android:layout_marginStart="12dp" />
+
+                </LinearLayout>
 
                 <!-- Email -->
                 <LinearLayout
@@ -130,7 +181,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#E0E0E0"
+                    android:background="@color/surface_variant"
                     android:layout_marginBottom="12dp" />
 
                 <!-- Phone -->
@@ -164,7 +215,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#E0E0E0"
+                    android:background="@color/surface_variant"
                     android:layout_marginBottom="12dp" />
 
                 <!-- User ID -->
@@ -189,7 +240,7 @@
                         android:text="ID"
                         android:textSize="11sp"
                         android:textStyle="bold"
-                        android:textColor="@color/text_primary"
+                        android:textColor="@color/primary"
                         android:gravity="end"
                         android:fontFamily="monospace" />
 
@@ -204,8 +255,11 @@
             android:id="@+id/stationInfoCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/secondary_blue"
+            app:cardBackgroundColor="@color/surface"
             app:layout_constraintTop_toBottomOf="@id/userInfoCard"
             android:layout_marginTop="16dp">
 
@@ -215,14 +269,30 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Station Information"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="16dp" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@android:drawable/ic_menu_mapmode"
+                        android:tint="@color/secondary_blue" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Station Information"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:fontFamily="sans-serif-black"
+                        android:layout_marginStart="12dp" />
+
+                </LinearLayout>
 
                 <!-- Station Name -->
                 <LinearLayout
@@ -255,7 +325,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#E0E0E0"
+                    android:background="@color/surface_variant"
                     android:layout_marginBottom="12dp" />
 
                 <!-- Station Type -->
@@ -289,7 +359,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#E0E0E0"
+                    android:background="@color/surface_variant"
                     android:layout_marginBottom="12dp" />
 
                 <!-- Location -->
@@ -315,7 +385,7 @@
                         android:text="Lat, Lng"
                         android:textSize="12sp"
                         android:textStyle="bold"
-                        android:textColor="@color/text_primary"
+                        android:textColor="@color/secondary_blue"
                         android:gravity="end"
                         android:fontFamily="monospace" />
 
@@ -324,7 +394,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#E0E0E0"
+                    android:background="@color/surface_variant"
                     android:layout_marginBottom="12dp" />
 
                 <!-- Total Slots -->
@@ -358,18 +428,24 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Logout Button -->
+        <!-- Logout Button with Gradient -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/logoutButton"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="Logout"
+            android:layout_height="60dp"
+            android:text="⚡ LOGOUT"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:fontFamily="sans-serif-black"
+            android:letterSpacing="0.05"
             app:icon="@android:drawable/ic_menu_close_clear_cancel"
+            app:iconTint="@color/text_primary"
             app:iconGravity="textStart"
-            app:cornerRadius="12dp"
-            android:backgroundTint="#F44336"
+            app:cornerRadius="16dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/secondary_pink"
+            android:backgroundTint="@color/surface_elevated"
             app:layout_constraintTop_toBottomOf="@id/stationInfoCard"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="16dp" />
