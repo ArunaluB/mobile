@@ -331,6 +331,7 @@
             android:layout_marginTop="12dp">
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardQrScan"
                 android:layout_width="0dp"
                 android:layout_height="110dp"
                 android:layout_weight="1"
@@ -344,7 +345,10 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:padding="16dp"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
 
                     <ImageView
                         android:layout_width="36dp"
@@ -368,6 +372,7 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardHistory"
                 android:layout_width="0dp"
                 android:layout_height="110dp"
                 android:layout_weight="1"
@@ -381,7 +386,10 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:padding="16dp"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
 
                     <ImageView
                         android:layout_width="36dp"
@@ -405,6 +413,7 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardProfile"
                 android:layout_width="0dp"
                 android:layout_height="110dp"
                 android:layout_weight="1"
@@ -418,7 +427,10 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:padding="16dp"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
 
                     <ImageView
                         android:layout_width="36dp"

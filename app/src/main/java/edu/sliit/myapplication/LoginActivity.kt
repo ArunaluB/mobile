@@ -7,9 +7,13 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
+import edu.sliit.myapplication.data.local.OfflineDatabase
 import edu.sliit.myapplication.data.network.RetrofitClient
 import edu.sliit.myapplication.databinding.ActivityLoginBinding
 import edu.sliit.myapplication.models.LoginRequest
+import edu.sliit.myapplication.models.LoginResponse
+import edu.sliit.myapplication.models.UserData
+import edu.sliit.myapplication.utils.NetworkMonitor
 import edu.sliit.myapplication.utils.UserPreferences
 import kotlinx.coroutines.launch
 
@@ -17,6 +21,8 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var userPreferences: UserPreferences
+    private lateinit var offlineDb: OfflineDatabase
+    private lateinit var networkMonitor: NetworkMonitor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +30,8 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         userPreferences = UserPreferences(this)
+        offlineDb = OfflineDatabase(this)
+        networkMonitor = NetworkMonitor(this)
 
         // Check if user is already logged in
         if (userPreferences.isLoggedIn()) {
@@ -34,11 +42,24 @@ class LoginActivity : AppCompatActivity() {
         setupClickListeners()
         animateViews()
         
+        // Show offline indicator if no internet
+        if (!networkMonitor.isOnline()) {
+            showOfflineMode()
+        }
+        
         // Request focus and show keyboard
         binding.usernameInput.postDelayed({
             binding.usernameInput.requestFocus()
             showKeyboard()
         }, 800)
+    }
+
+    private fun showOfflineMode() {
+        Snackbar.make(
+            binding.root,
+            "📡 Offline Mode: Use saved credentials to login",
+            Snackbar.LENGTH_LONG
+        ).setBackgroundTint(getColor(android.R.color.holo_orange_light)).show()
     }
 
     private fun setupClickListeners() {
@@ -86,77 +107,148 @@ class LoginActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                val loginRequest = LoginRequest(username, password)
-                android.util.Log.d("LoginActivity", "Attempting login for user: $username")
-                
-                val response = RetrofitClient.apiService.login(loginRequest)
-                
-                android.util.Log.d("LoginActivity", "Response code: ${response.code()}")
-                android.util.Log.d("LoginActivity", "Response message: ${response.message()}")
-
-                if (response.isSuccessful && response.body() != null) {
-                    val loginResponse = response.body()!!
-                    android.util.Log.d("LoginActivity", "========== LOGIN SUCCESS ==========")
-                    android.util.Log.d("LoginActivity", "Login successful for: ${loginResponse.username}")
-                    android.util.Log.d("LoginActivity", "Role: ${loginResponse.role}")
-                    android.util.Log.d("LoginActivity", "UserId: ${loginResponse.userId}")
-                    android.util.Log.d("LoginActivity", "Token: ${loginResponse.token.take(20)}...")
-                    android.util.Log.d("LoginActivity", "UserData: ${loginResponse.userData}")
-                    android.util.Log.d("LoginActivity", "Email: ${loginResponse.userData?.email}")
-                    android.util.Log.d("LoginActivity", "Phone: ${loginResponse.userData?.phone}")
-                    android.util.Log.d("LoginActivity", "StationName: ${loginResponse.userData?.stationName}")
-                    android.util.Log.d("LoginActivity", "===================================")
-                    
-                    // Save login response to SharedPreferences
-                    userPreferences.saveLoginResponse(loginResponse)
-                    
-                    // Verify the save by immediately reading it back
-                    val verifyResponse = userPreferences.getLoginResponse()
-                    android.util.Log.d("LoginActivity", "Verification - Retrieved username: ${verifyResponse?.username}")
-                    android.util.Log.d("LoginActivity", "Verification - Retrieved email: ${verifyResponse?.userData?.email}")
-
-                    // Success message
-                    Snackbar.make(
-                        binding.root,
-                        "✓ Login Successful! Welcome ${loginResponse.username}",
-                        Snackbar.LENGTH_SHORT
-                    ).setBackgroundTint(getColor(R.color.success)).show()
-
-                    // Navigate to MainActivity with a slight delay
-                    binding.root.postDelayed({
-                        navigateToMain()
-                    }, 500)
+                // Check if online
+                if (networkMonitor.isOnline()) {
+                    // Online mode: Try API login
+                    performOnlineLogin(username, password)
                 } else {
-                    // Error message with status code
-                    val errorMessage = when (response.code()) {
-                        401 -> "Invalid username or password"
-                        404 -> "API endpoint not found"
-                        500 -> "Server error. Please try again"
-                        else -> response.message() ?: "Login failed"
-                    }
-                    android.util.Log.e("LoginActivity", "Login failed: $errorMessage (Code: ${response.code()})")
-                    showError("✗ $errorMessage")
+                    // Offline mode: Check local credentials
+                    performOfflineLogin(username, password)
                 }
-            } catch (e: java.net.UnknownHostException) {
-                android.util.Log.e("LoginActivity", "Network error: ${e.message}", e)
-                showError("✗ Cannot connect to server. Check your network connection")
-            } catch (e: java.net.ConnectException) {
-                android.util.Log.e("LoginActivity", "Connection error: ${e.message}", e)
-                showError("✗ Connection refused. Make sure the server is running")
-            } catch (e: javax.net.ssl.SSLException) {
-                android.util.Log.e("LoginActivity", "SSL error: ${e.message}", e)
-                showError("✗ SSL connection error. Check server certificate")
-            } catch (e: java.net.SocketTimeoutException) {
-                android.util.Log.e("LoginActivity", "Timeout error: ${e.message}", e)
-                showError("✗ Connection timeout. Server took too long to respond")
             } catch (e: Exception) {
-                android.util.Log.e("LoginActivity", "Unexpected error: ${e.message}", e)
-                showError("✗ Error: ${e.message ?: "Unknown error occurred"}")
-                e.printStackTrace()
+                android.util.Log.e("LoginActivity", "Login error: ${e.message}", e)
+                // Fallback to offline login if online login fails
+                performOfflineLogin(username, password)
             } finally {
                 binding.loginButton.isEnabled = true
                 binding.progressBar.visibility = View.GONE
             }
+        }
+    }
+
+    private suspend fun performOnlineLogin(username: String, password: String) {
+        try {
+            val loginRequest = LoginRequest(username, password)
+            android.util.Log.d("LoginActivity", "Attempting online login for user: $username")
+            
+            val response = RetrofitClient.apiService.login(loginRequest)
+            
+            android.util.Log.d("LoginActivity", "Response code: ${response.code()}")
+
+            if (response.isSuccessful && response.body() != null) {
+                val loginResponse = response.body()!!
+                android.util.Log.d("LoginActivity", "========== ONLINE LOGIN SUCCESS ==========")
+                android.util.Log.d("LoginActivity", "Login successful for: ${loginResponse.username}")
+                android.util.Log.d("LoginActivity", "Role: ${loginResponse.role}")
+                android.util.Log.d("LoginActivity", "StationName: ${loginResponse.userData?.stationName}")
+                android.util.Log.d("LoginActivity", "==========================================")
+                
+                // Save to SharedPreferences
+                userPreferences.saveLoginResponse(loginResponse)
+                
+                // Save to local database for offline access
+                offlineDb.saveUserCredentials(
+                    username = username,
+                    password = password, // Save encrypted in production!
+                    fullName = loginResponse.userData?.fullName,
+                    email = loginResponse.userData?.email,
+                    phone = loginResponse.userData?.phone,
+                    role = loginResponse.role,
+                    stationId = loginResponse.userData?.stationId,
+                    stationName = loginResponse.userData?.stationName,
+                    token = loginResponse.token
+                )
+                
+                android.util.Log.d("LoginActivity", "✅ Credentials saved for offline access")
+
+                // Success message
+                Snackbar.make(
+                    binding.root,
+                    "✓ Login Successful! Welcome ${loginResponse.username}",
+                    Snackbar.LENGTH_SHORT
+                ).setBackgroundTint(getColor(R.color.success)).show()
+
+                // Navigate to MainActivity
+                binding.root.postDelayed({
+                    navigateToMain()
+                }, 500)
+            } else {
+                // API login failed, try offline
+                android.util.Log.w("LoginActivity", "Online login failed, trying offline...")
+                performOfflineLogin(username, password)
+            }
+        } catch (e: java.net.UnknownHostException) {
+            android.util.Log.e("LoginActivity", "Network error, trying offline login", e)
+            performOfflineLogin(username, password)
+        } catch (e: java.net.ConnectException) {
+            android.util.Log.e("LoginActivity", "Connection error, trying offline login", e)
+            performOfflineLogin(username, password)
+        } catch (e: Exception) {
+            android.util.Log.e("LoginActivity", "Unexpected error, trying offline login", e)
+            performOfflineLogin(username, password)
+        }
+    }
+
+    private fun performOfflineLogin(username: String, password: String) {
+        android.util.Log.d("LoginActivity", "Attempting offline login for user: $username")
+        
+        // Check if credentials exist in local database
+        val isValid = offlineDb.validateUserCredentials(username, password)
+        
+        if (isValid) {
+            android.util.Log.d("LoginActivity", "========== OFFLINE LOGIN SUCCESS ==========")
+            
+            // Get user data from database
+            val userData = offlineDb.getUserData(username)
+            
+            if (userData != null) {
+                // Create LoginResponse from local data
+                val loginResponse = LoginResponse(
+                    success = true,
+                    message = "Logged in offline",
+                    token = userData["token"] ?: "",
+                    username = userData["username"] ?: username,
+                    role = userData["role"] ?: "Operator",
+                    userId = "",
+                    userData = UserData(
+                        id = "",
+                        fullName = userData["fullName"],
+                        email = userData["email"],
+                        phone = userData["phone"],
+                        role = userData["role"],
+                        stationId = userData["stationId"],
+                        stationName = userData["stationName"],
+                        nic = null,
+                        isActive = true,
+                        createdAt = null
+                    )
+                )
+                
+                // Save to SharedPreferences
+                userPreferences.saveLoginResponse(loginResponse)
+                
+                android.util.Log.d("LoginActivity", "✅ Offline login successful")
+                android.util.Log.d("LoginActivity", "User: ${userData["username"]}")
+                android.util.Log.d("LoginActivity", "Station: ${userData["stationName"]}")
+                android.util.Log.d("LoginActivity", "==========================================")
+
+                // Success message with offline indicator
+                Snackbar.make(
+                    binding.root,
+                    "✓ Offline Login Successful! Welcome ${userData["username"]}",
+                    Snackbar.LENGTH_SHORT
+                ).setBackgroundTint(getColor(android.R.color.holo_orange_light)).show()
+
+                // Navigate to MainActivity
+                binding.root.postDelayed({
+                    navigateToMain()
+                }, 500)
+            } else {
+                showError("✗ Error loading user data")
+            }
+        } else {
+            android.util.Log.e("LoginActivity", "❌ Offline login failed: Invalid credentials")
+            showError("✗ Invalid credentials. Login online first to save credentials.")
         }
     }
 

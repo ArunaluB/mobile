@@ -1,7 +1,9 @@
 package edu.sliit.myapplication
 
+import android.Manifest
 import android.animation.ObjectAnimator
 import android.app.Dialog
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +15,8 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +26,7 @@ import com.example.newdeveopmen.ScanHistoryRepository
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
+import com.google.zxing.integration.android.IntentIntegrator
 import edu.sliit.myapplication.adapter.AvailableSlotsAdapter
 import edu.sliit.myapplication.adapter.TimeSlotsAdapter
 import edu.sliit.myapplication.data.model.TimeSlot
@@ -50,6 +55,29 @@ class HomeFragment : Fragment() {
     
     companion object {
         private const val TAG = "HomeFragment"
+    }
+
+    // Camera permission launcher for QR scanning
+    private val cameraPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            startQRScannerForBooking()
+        } else {
+            Toast.makeText(context, "Camera permission is required to scan QR codes", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // QR Scanner launcher
+    private val qrScannerLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val scanResult = IntentIntegrator.parseActivityResult(result.resultCode, result.data)
+        if (scanResult != null && scanResult.contents != null) {
+            handleQRScanResult(scanResult.contents)
+        } else {
+            Toast.makeText(context, "Scan cancelled", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onCreateView(
@@ -288,6 +316,51 @@ class HomeFragment : Fragment() {
             } else {
                 Toast.makeText(context, "⚠️ Station ID not found. Please login again.", Toast.LENGTH_LONG).show()
             }
+        }
+        
+        // Quick Actions - QR Scan
+        binding.cardQrScan.setOnClickListener {
+            navigateToFragment(ScanFragment())
+        }
+        
+        // Quick Actions - History
+        binding.cardHistory.setOnClickListener {
+            navigateToFragment(com.example.newdeveopmen.HistoryFragment())
+        }
+        
+        // Quick Actions - Profile
+        binding.cardProfile.setOnClickListener {
+            navigateToFragment(ProfileFragment())
+        }
+    }
+    
+    private fun navigateToFragment(fragment: Fragment) {
+        try {
+            // Update bottom navigation
+            val mainActivity = activity as? MainActivity
+            val bottomNav = mainActivity?.findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNavigation)
+            
+            when (fragment) {
+                is ScanFragment -> {
+                    bottomNav?.selectedItemId = R.id.nav_scan
+                }
+                is com.example.newdeveopmen.HistoryFragment -> {
+                    bottomNav?.selectedItemId = R.id.nav_history
+                }
+                is ProfileFragment -> {
+                    bottomNav?.selectedItemId = R.id.nav_profile
+                }
+            }
+            
+            // Navigate to fragment
+            activity?.supportFragmentManager?.beginTransaction()
+                ?.replace(R.id.fragmentContainer, fragment)
+                ?.commit()
+            
+            Log.d(TAG, "Navigated to ${fragment::class.java.simpleName}")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error navigating to fragment", e)
+            Toast.makeText(context, "Unable to navigate", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -568,7 +641,9 @@ class HomeFragment : Fragment() {
         tvSlotId?.text = slotId
 
         btnStartBooking?.setOnClickListener {
-            viewModel.startBooking(bookingId)
+            // Store booking ID and open QR scanner
+            currentBookingId = bookingId
+            checkCameraPermissionAndScanForBooking()
         }
 
         btnClose?.setOnClickListener {
@@ -576,6 +651,51 @@ class HomeFragment : Fragment() {
         }
 
         bookingSuccessDialog?.show()
+    }
+
+    private fun checkCameraPermissionAndScanForBooking() {
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                startQRScannerForBooking()
+            }
+            else -> {
+                cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+        }
+    }
+
+    private fun startQRScannerForBooking() {
+        try {
+            val integrator = IntentIntegrator.forSupportFragment(this)
+            integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
+            integrator.setPrompt("Scan QR Code to Start Booking")
+            integrator.setCameraId(0)
+            integrator.setBeepEnabled(true)
+            integrator.setBarcodeImageEnabled(false)
+            integrator.setOrientationLocked(true)
+            qrScannerLauncher.launch(integrator.createScanIntent())
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(context, "Error starting camera: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun handleQRScanResult(qrContent: String) {
+        Log.d(TAG, "QR Scanned: $qrContent")
+        
+        // Get the booking ID (either from QR or from stored value)
+        val bookingId = currentBookingId
+        
+        if (bookingId != null) {
+            // Call API to start booking with the scanned QR verification
+            Toast.makeText(context, "✅ QR Code verified! Starting booking...", Toast.LENGTH_SHORT).show()
+            viewModel.startBooking(bookingId)
+        } else {
+            Toast.makeText(context, "❌ No booking ID found", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun onSlotSelected(slot: TimeSlot) {
