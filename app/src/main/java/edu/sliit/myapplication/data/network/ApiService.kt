@@ -77,7 +77,7 @@ interface ApiService {
     ): Response<QuickBookingResponse2>
     
     // Slot Management Endpoints
-    @GET("api/Bookings/available-slots")
+    @GET("api/Bookings/slots-status")
     suspend fun getSlotStatus(
         @Query("stationId") stationId: String,
         @Query("startUtc") startUtc: String,

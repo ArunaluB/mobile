@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/divider">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Status Indicator Circle -->
+        <View
+            android:id="@+id/statusIndicator"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:background="@drawable/circle_indicator"
+            android:backgroundTint="@color/success"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/tvSlotLabel" />
+
+        <!-- Slot Label -->
+        <TextView
+            android:id="@+id/tvSlotLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            app:layout_constraintStart_toEndOf="@id/statusIndicator"
+            app:layout_constraintEnd_toStartOf="@id/switchActive"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Slot 1" />
+
+        <!-- Slot ID -->
+        <TextView
+            android:id="@+id/tvSlotId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="12sp"
+            android:textColor="@color/text_secondary"
+            app:layout_constraintStart_toStartOf="@id/tvSlotLabel"
+            app:layout_constraintEnd_toStartOf="@id/switchActive"
+            app:layout_constraintTop_toBottomOf="@id/tvSlotLabel"
+            tools:text="ID: slot-001" />
+
+        <!-- Status Row -->
+        <LinearLayout
+            android:id="@+id/statusRow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@id/tvSlotLabel"
+            app:layout_constraintEnd_toStartOf="@id/switchActive"
+            app:layout_constraintTop_toBottomOf="@id/tvSlotId">
+
+            <!-- Availability Status -->
+            <TextView
+                android:id="@+id/tvAvailabilityStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/success"
+                tools:text="Available" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="•"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+
+            <!-- Active Status -->
+            <TextView
+                android:id="@+id/tvActiveStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="@color/text_secondary"
+                tools:text="Active" />
+
+        </LinearLayout>
+
+        <!-- Toggle Switch -->
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchActive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:thumbTint="@color/white"
+            app:trackTint="@color/switch_track" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
