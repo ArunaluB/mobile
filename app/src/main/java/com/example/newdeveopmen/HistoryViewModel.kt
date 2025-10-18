@@ -8,11 +8,16 @@ import kotlinx.coroutines.launch
 
 class HistoryViewModel(private val repository: ScanHistoryRepository) : ViewModel() {
     
+    private val bookingRepository = HistoryBookingRepository()
+    
     private val _historyList = MutableLiveData<List<BookingHistory>>()
     val historyList: LiveData<List<BookingHistory>> = _historyList
     
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
+    
+    private val _actionResult = MutableLiveData<Result<String>>()
+    val actionResult: LiveData<Result<String>> = _actionResult
     
     init {
         loadAllHistory()
@@ -62,22 +67,52 @@ class HistoryViewModel(private val repository: ScanHistoryRepository) : ViewMode
     
     fun completeBooking(reservationId: String) {
         viewModelScope.launch {
+            _isLoading.value = true
             try {
-                repository.updateHistoryStatus(reservationId, isCompleted = true, isCancelled = false)
-                loadAllHistory() // Reload to update UI
+                // Call API to complete booking
+                val result = bookingRepository.completeBooking(reservationId)
+                
+                if (result.isSuccess) {
+                    // Remove from history after successful completion
+                    repository.deleteHistory(reservationId)
+                    _actionResult.value = Result.success("✅ Booking completed successfully!")
+                    loadAllHistory() // Reload to update UI
+                } else {
+                    _actionResult.value = Result.failure(
+                        result.exceptionOrNull() ?: Exception("Failed to complete booking")
+                    )
+                }
             } catch (e: Exception) {
+                _actionResult.value = Result.failure(e)
                 e.printStackTrace()
+            } finally {
+                _isLoading.value = false
             }
         }
     }
     
     fun cancelBooking(reservationId: String) {
         viewModelScope.launch {
+            _isLoading.value = true
             try {
-                repository.updateHistoryStatus(reservationId, isCompleted = false, isCancelled = true)
-                loadAllHistory() // Reload to update UI
+                // Call API to cancel booking
+                val result = bookingRepository.quickCancelBooking(reservationId)
+                
+                if (result.isSuccess) {
+                    // Remove from history after successful cancellation
+                    repository.deleteHistory(reservationId)
+                    _actionResult.value = Result.success("✅ Booking cancelled successfully!")
+                    loadAllHistory() // Reload to update UI
+                } else {
+                    _actionResult.value = Result.failure(
+                        result.exceptionOrNull() ?: Exception("Failed to cancel booking")
+                    )
+                }
             } catch (e: Exception) {
+                _actionResult.value = Result.failure(e)
                 e.printStackTrace()
+            } finally {
+                _isLoading.value = false
             }
         }
     }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,6 +34,7 @@ class HistoryFragment : Fragment() {
         setupRecyclerView()
         setupFilters()
         observeHistory()
+        observeActionResult()
     }
     
     private fun setupViewModel() {
@@ -95,6 +97,20 @@ class HistoryFragment : Fragment() {
             } else {
                 binding.recyclerView.visibility = View.VISIBLE
                 binding.emptyState.visibility = View.GONE
+            }
+        }
+    }
+    
+    private fun observeActionResult() {
+        viewModel.actionResult.observe(viewLifecycleOwner) { result ->
+            result.onSuccess { message ->
+                Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+            }.onFailure { error ->
+                Toast.makeText(
+                    requireContext(),
+                    "❌ Error: ${error.message}",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }

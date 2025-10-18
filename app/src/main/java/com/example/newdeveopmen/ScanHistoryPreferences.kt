@@ -11,6 +11,7 @@ data class BookingHistory(
     val id: String = UUID.randomUUID().toString(),
     val reservationId: String,
     val stationId: String,
+    val stationName: String? = null,
     val status: String,
     val ownerNic: String,
     val startTime: String,

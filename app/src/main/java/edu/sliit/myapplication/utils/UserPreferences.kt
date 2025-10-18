@@ -19,19 +19,49 @@ class UserPreferences(context: Context) {
 
     fun saveLoginResponse(loginResponse: LoginResponse) {
         val json = gson.toJson(loginResponse)
-        sharedPreferences.edit().apply {
-            putString(KEY_LOGIN_RESPONSE, json)
-            putString(KEY_TOKEN, loginResponse.token)
-            putBoolean(KEY_IS_LOGGED_IN, true)
-            apply()
-        }
+        android.util.Log.d("UserPreferences", "========== SAVING LOGIN RESPONSE ==========")
+        android.util.Log.d("UserPreferences", "Username: ${loginResponse.username}")
+        android.util.Log.d("UserPreferences", "Role: ${loginResponse.role}")
+        android.util.Log.d("UserPreferences", "UserId: ${loginResponse.userId}")
+        android.util.Log.d("UserPreferences", "UserData: ${loginResponse.userData}")
+        android.util.Log.d("UserPreferences", "Station Name: ${loginResponse.userData?.stationName}")
+        android.util.Log.d("UserPreferences", "Email: ${loginResponse.userData?.email}")
+        android.util.Log.d("UserPreferences", "Phone: ${loginResponse.userData?.phone}")
+        android.util.Log.d("UserPreferences", "JSON to save: $json")
+        
+        val editor = sharedPreferences.edit()
+        editor.putString(KEY_LOGIN_RESPONSE, json)
+        editor.putString(KEY_TOKEN, loginResponse.token)
+        editor.putBoolean(KEY_IS_LOGGED_IN, true)
+        val success = editor.commit() // Use commit() instead of apply() to ensure immediate save
+        
+        android.util.Log.d("UserPreferences", "Save successful: $success")
+        android.util.Log.d("UserPreferences", "=========================================")
     }
 
     fun getLoginResponse(): LoginResponse? {
         val json = sharedPreferences.getString(KEY_LOGIN_RESPONSE, null)
+        android.util.Log.d("UserPreferences", "========== RETRIEVING LOGIN RESPONSE ==========")
+        android.util.Log.d("UserPreferences", "Retrieved JSON: $json")
+        
         return if (json != null) {
-            gson.fromJson(json, LoginResponse::class.java)
+            try {
+                val response = gson.fromJson(json, LoginResponse::class.java)
+                android.util.Log.d("UserPreferences", "Parsed Username: ${response.username}")
+                android.util.Log.d("UserPreferences", "Parsed Role: ${response.role}")
+                android.util.Log.d("UserPreferences", "Parsed UserData: ${response.userData}")
+                android.util.Log.d("UserPreferences", "Parsed Station Name: ${response.userData?.stationName}")
+                android.util.Log.d("UserPreferences", "Parsed Email: ${response.userData?.email}")
+                android.util.Log.d("UserPreferences", "Parsed Phone: ${response.userData?.phone}")
+                android.util.Log.d("UserPreferences", "==============================================")
+                response
+            } catch (e: Exception) {
+                android.util.Log.e("UserPreferences", "Error parsing JSON: ${e.message}", e)
+                null
+            }
         } else {
+            android.util.Log.w("UserPreferences", "No login response found in SharedPreferences")
+            android.util.Log.d("UserPreferences", "==============================================")
             null
         }
     }

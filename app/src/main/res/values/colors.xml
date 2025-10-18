@@ -16,4 +16,11 @@
     <color name="status_completed">#2196F3</color>
     <color name="status_cancelled">#F44336</color>
     <color name="status_pending">#9E9E9E</color>
+    
+    <!-- Slot Management Colors -->
+    <color name="badge_available_bg">#E8F5E9</color>
+    <color name="badge_unavailable_bg">#FFF3E0</color>
+    <color name="badge_active_bg">#E3F2FD</color>
+    <color name="badge_inactive_bg">#EEEEEE</color>
+    <color name="card_inactive_bg">#FAFAFA</color>
 </resources>

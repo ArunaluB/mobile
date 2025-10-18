@@ -96,10 +96,24 @@ class LoginActivity : AppCompatActivity() {
 
                 if (response.isSuccessful && response.body() != null) {
                     val loginResponse = response.body()!!
+                    android.util.Log.d("LoginActivity", "========== LOGIN SUCCESS ==========")
                     android.util.Log.d("LoginActivity", "Login successful for: ${loginResponse.username}")
+                    android.util.Log.d("LoginActivity", "Role: ${loginResponse.role}")
+                    android.util.Log.d("LoginActivity", "UserId: ${loginResponse.userId}")
+                    android.util.Log.d("LoginActivity", "Token: ${loginResponse.token.take(20)}...")
+                    android.util.Log.d("LoginActivity", "UserData: ${loginResponse.userData}")
+                    android.util.Log.d("LoginActivity", "Email: ${loginResponse.userData?.email}")
+                    android.util.Log.d("LoginActivity", "Phone: ${loginResponse.userData?.phone}")
+                    android.util.Log.d("LoginActivity", "StationName: ${loginResponse.userData?.stationName}")
+                    android.util.Log.d("LoginActivity", "===================================")
                     
                     // Save login response to SharedPreferences
                     userPreferences.saveLoginResponse(loginResponse)
+                    
+                    // Verify the save by immediately reading it back
+                    val verifyResponse = userPreferences.getLoginResponse()
+                    android.util.Log.d("LoginActivity", "Verification - Retrieved username: ${verifyResponse?.username}")
+                    android.util.Log.d("LoginActivity", "Verification - Retrieved email: ${verifyResponse?.userData?.email}")
 
                     // Success message
                     Snackbar.make(

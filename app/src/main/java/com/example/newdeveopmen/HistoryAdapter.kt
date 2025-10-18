@@ -39,21 +39,53 @@ class HistoryAdapter(
         private val btnCancel: Button = itemView.findViewById(R.id.btnCancel)
         
         fun bind(history: BookingHistory) {
-            tvReservationId.text = "ID: ${history.reservationId}"
-            tvStationId.text = "Station: ${history.stationId}"
+            tvReservationId.text = "ID: ${history.reservationId.take(12)}..."
+            
+            // Show station name if available, otherwise show station ID
+            val stationDisplay = if (!history.stationName.isNullOrEmpty()) {
+                history.stationName
+            } else {
+                history.stationId.take(12) + "..."
+            }
+            tvStationId.text = "Station: $stationDisplay"
+            
             tvStatus.text = getDisplayStatus(history)
             tvTimeSlot.text = "${history.startTime} - ${history.endTime}"
             
+            // User-friendly date format
             val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
             val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
-            tvDateScanned.text = dateFormat.format(Date(history.scanTime))
-            tvTimeScanned.text = "Scanned at ${timeFormat.format(Date(history.scanTime))}"
+            val calendar = Calendar.getInstance()
+            val today = Calendar.getInstance()
+            today.set(Calendar.HOUR_OF_DAY, 0)
+            today.set(Calendar.MINUTE, 0)
+            today.set(Calendar.SECOND, 0)
+            today.set(Calendar.MILLISECOND, 0)
+            
+            calendar.timeInMillis = history.scanTime
+            val bookingDate = Calendar.getInstance()
+            bookingDate.timeInMillis = history.scanTime
+            bookingDate.set(Calendar.HOUR_OF_DAY, 0)
+            bookingDate.set(Calendar.MINUTE, 0)
+            bookingDate.set(Calendar.SECOND, 0)
+            bookingDate.set(Calendar.MILLISECOND, 0)
+            
+            // Check if today, yesterday, or show date
+            val dateText = when {
+                bookingDate.timeInMillis == today.timeInMillis -> "Today"
+                bookingDate.timeInMillis == today.timeInMillis - (24 * 60 * 60 * 1000) -> "Yesterday"
+                else -> dateFormat.format(Date(history.scanTime))
+            }
+            
+            tvDateScanned.text = dateText
+            tvTimeScanned.text = "Booked at ${timeFormat.format(Date(history.scanTime))}"
             
             // Set status color
             val statusColor = when {
                 history.isCompleted -> R.color.status_completed
                 history.isCancelled -> R.color.status_cancelled
-                history.status.equals("In-Progress", ignoreCase = true) -> R.color.status_in_progress
+                history.status.equals("In-Progress", ignoreCase = true) || 
+                history.status.equals("Started", ignoreCase = true) -> R.color.status_in_progress
                 history.status.equals("Approved", ignoreCase = true) -> R.color.status_approved
                 else -> R.color.status_pending
             }

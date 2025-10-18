@@ -6,18 +6,19 @@ data class LoginResponse(
     @SerializedName("token")
     val token: String,
     
-    @SerializedName("role")
-    val role: String,
-    
-    @SerializedName("userId")
-    val userId: String,
-    
-    @SerializedName("username")
-    val username: String,
-    
     @SerializedName("userData")
-    val userData: UserData
-)
+    val userData: UserData?
+) {
+    // Computed properties for backward compatibility
+    val role: String
+        get() = "StationOperator" // Default role from token
+    
+    val userId: String
+        get() = userData?.id ?: ""
+    
+    val username: String
+        get() = userData?.username ?: ""
+}
 
 data class UserData(
     @SerializedName("id")
@@ -29,21 +30,22 @@ data class UserData(
     @SerializedName("stationId")
     val stationId: String,
     
-    @SerializedName("stationName")
-    val stationName: String,
-    
     @SerializedName("phone")
-    val phone: String,
+    val phone: String?,
     
     @SerializedName("email")
-    val email: String,
+    val email: String?,
     
     @SerializedName("active")
     val active: Boolean,
     
     @SerializedName("station")
-    val station: Station
-)
+    val station: Station?
+) {
+    // Computed property for station name
+    val stationName: String?
+        get() = station?.name
+}
 
 data class Station(
     @SerializedName("id")
@@ -53,13 +55,13 @@ data class Station(
     val name: String,
     
     @SerializedName("location")
-    val location: Location,
+    val location: Location?,
     
     @SerializedName("type")
-    val type: String,
+    val type: String?,
     
     @SerializedName("slots")
-    val slots: List<Slot>,
+    val slots: List<Slot>?,
     
     @SerializedName("active")
     val active: Boolean
