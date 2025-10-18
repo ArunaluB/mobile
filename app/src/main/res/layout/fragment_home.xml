@@ -512,6 +512,7 @@
                             android:backgroundTint="#4CAF50" />
 
                         <TextView
+                            android:id="@+id/tvLastScan"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Last scan: Today at 10:30 AM"
@@ -560,6 +561,7 @@
                             android:backgroundTint="#FF9800" />
 
                         <TextView
+                            android:id="@+id/tvSystemStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Status: All systems operational ✓"
