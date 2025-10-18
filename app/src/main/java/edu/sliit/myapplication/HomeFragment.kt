@@ -23,7 +23,6 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import edu.sliit.myapplication.adapter.AvailableSlotsAdapter
-import edu.sliit.myapplication.adapter.SlotManagementAdapter
 import edu.sliit.myapplication.adapter.TimeSlotsAdapter
 import edu.sliit.myapplication.data.model.TimeSlot
 import edu.sliit.myapplication.databinding.FragmentHomeBinding
@@ -43,11 +42,9 @@ class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by viewModels()
     private var quickBookingDialog: Dialog? = null
     private var bookingSuccessDialog: Dialog? = null
-    private var slotManagementDialog: Dialog? = null
     private lateinit var userPreferences: UserPreferences
     private lateinit var historyRepository: ScanHistoryRepository
     private var currentBookingId: String? = null
-    private var allSlots: List<edu.sliit.myapplication.data.model.SlotDetail> = emptyList()
     
     companion object {
         private const val TAG = "HomeFragment"
@@ -126,13 +123,6 @@ class HomeFragment : Fragment() {
             repeatMode = ObjectAnimator.REVERSE
         }
         
-        // Floating animation for Slot Management (offset timing)
-        val translateY2 = ObjectAnimator.ofFloat(binding.slotManagementCard, "translationY", -10f, 0f).apply {
-            duration = 2000
-            repeatCount = ObjectAnimator.INFINITE
-            repeatMode = ObjectAnimator.REVERSE
-        }
-        
         // Rotation animation for header icon
         val rotate = ObjectAnimator.ofFloat(binding.headerIcon, "rotation", 0f, 360f).apply {
             duration = 10000
@@ -142,7 +132,6 @@ class HomeFragment : Fragment() {
         // Scale animations for icons
         val scaleIcons = listOf(
             binding.iconQuickBooking,
-            binding.iconSlotManagement,
             binding.iconActive,
             binding.iconAvailable
         )
@@ -165,175 +154,9 @@ class HomeFragment : Fragment() {
         }
         
         translateY1.start()
-        translateY2.start()
         rotate.start()
     }
     
-    private fun showSlotManagementDialog() {
-        val loginResponse = userPreferences.getLoginResponse()
-        val stationId = loginResponse?.userData?.stationId
-        
-        Log.d(TAG, "========== Slot Management Dialog ==========")
-        Log.d(TAG, "Station ID from UserPreferences: $stationId")
-        Log.d(TAG, "Login Response: ${loginResponse?.userData}")
-        
-        if (stationId == null) {
-            Log.e(TAG, "❌ Station ID is null!")
-            Toast.makeText(context, "⚠️ Station ID not found. Please login again.", Toast.LENGTH_LONG).show()
-            return
-        }
-        
-        Log.d(TAG, "✓ Station ID found: $stationId")
-        
-        slotManagementDialog = Dialog(requireContext()).apply {
-            setContentView(R.layout.dialog_slot_management_v2)
-            window?.setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            window?.setBackgroundDrawableResource(android.R.color.transparent)
-        }
-
-        val rvSlots = slotManagementDialog?.findViewById<RecyclerView>(R.id.rvSlots)
-        val btnClose = slotManagementDialog?.findViewById<ImageView>(R.id.btnClose)
-        val btnClose2 = slotManagementDialog?.findViewById<MaterialButton>(R.id.btnClose2)
-        val btnRefresh = slotManagementDialog?.findViewById<MaterialButton>(R.id.btnRefresh)
-        val progressBar = slotManagementDialog?.findViewById<ProgressBar>(R.id.progressBar)
-        val emptyState = slotManagementDialog?.findViewById<View>(R.id.emptyState)
-        val tvStationInfo = slotManagementDialog?.findViewById<TextView>(R.id.tvStationInfo)
-        val tvTotalCount = slotManagementDialog?.findViewById<TextView>(R.id.tvTotalCount)
-        val tvAvailableCount = slotManagementDialog?.findViewById<TextView>(R.id.tvAvailableCount)
-        val tvActiveCount = slotManagementDialog?.findViewById<TextView>(R.id.tvActiveCount)
-        
-        // Filter chips
-        val chipAll = slotManagementDialog?.findViewById<Chip>(R.id.chipAll)
-        val chipAvailable = slotManagementDialog?.findViewById<Chip>(R.id.chipAvailable)
-        val chipActive = slotManagementDialog?.findViewById<Chip>(R.id.chipActive)
-
-        // Setup RecyclerView with new adapter
-        val adapter = SlotManagementAdapter { slot, newActiveState ->
-            // User toggled the switch
-            // If slot is available (true) and user turns OFF → make unavailable (active: false)
-            // If slot is unavailable (false) and user turns ON → make available (active: true)
-            Log.d(TAG, "Toggle clicked for slot ${slot.slotId}")
-            Log.d(TAG, "Current available: ${slot.available}, New switch state: $newActiveState")
-            viewModel.toggleSlotStatus(stationId, slot.slotId, slot.available)
-        }
-        
-        rvSlots?.layoutManager = LinearLayoutManager(requireContext())
-        rvSlots?.adapter = adapter
-
-        // Create observers
-        val slotStatusObserver = androidx.lifecycle.Observer<List<edu.sliit.myapplication.data.model.SlotDetail>> { slots ->
-            allSlots = slots
-            
-            if (slots.isEmpty()) {
-                rvSlots?.visibility = View.GONE
-                emptyState?.visibility = View.VISIBLE
-                Log.d(TAG, "Slot Management: No slots available")
-            } else {
-                rvSlots?.visibility = View.VISIBLE
-                emptyState?.visibility = View.GONE
-                adapter.submitList(slots)
-                
-                // Update stats
-                val availableCount = slots.count { it.available }
-                val unavailableCount = slots.count { !it.available }
-                
-                tvTotalCount?.text = slots.size.toString()
-                tvAvailableCount?.text = availableCount.toString()
-                tvActiveCount?.text = unavailableCount.toString()  // Show unavailable count
-                
-                Log.d(TAG, "Slot Management: Displaying ${slots.size} slots (Available: $availableCount, Unavailable: $unavailableCount)")
-            }
-        }
-        
-        val stationNameObserver = androidx.lifecycle.Observer<String> { stationName ->
-            tvStationInfo?.text = stationName
-            Log.d(TAG, "Slot Management: Station name - $stationName")
-        }
-
-        val loadingObserver = androidx.lifecycle.Observer<Boolean> { isLoading ->
-            progressBar?.visibility = if (isLoading) View.VISIBLE else View.GONE
-            Log.d(TAG, "Slot Management: Loading - $isLoading")
-        }
-        
-        val slotUpdateObserver = androidx.lifecycle.Observer<Result<edu.sliit.myapplication.data.model.SlotDetail>> { result ->
-            result.onSuccess { updatedSlot ->
-                val status = if (updatedSlot.active) "activated" else "deactivated"
-                Toast.makeText(
-                    context,
-                    "✅ Slot ${updatedSlot.slotId} $status successfully!",
-                    Toast.LENGTH_SHORT
-                ).show()
-                Log.d(TAG, "Slot Management: Slot ${updatedSlot.slotId} $status")
-            }.onFailure { error ->
-                Toast.makeText(
-                    context,
-                    "❌ Failed to update slot: ${error.message}",
-                    Toast.LENGTH_LONG
-                ).show()
-                Log.e(TAG, "Slot Management: Update failed - ${error.message}")
-            }
-        }
-        
-        // Attach observers
-        viewModel.slotStatus.observe(viewLifecycleOwner, slotStatusObserver)
-        viewModel.slotStationName.observe(viewLifecycleOwner, stationNameObserver)
-        viewModel.isLoading.observe(viewLifecycleOwner, loadingObserver)
-        viewModel.slotUpdateResult.observe(viewLifecycleOwner, slotUpdateObserver)
-        
-        // Filter functionality
-        chipAll?.setOnClickListener {
-            adapter.submitList(allSlots)
-            Log.d(TAG, "Slot Management: Filter - All (${allSlots.size} slots)")
-        }
-        
-        chipAvailable?.setOnClickListener {
-            val filtered = allSlots.filter { it.available }
-            adapter.submitList(filtered)
-            Log.d(TAG, "Slot Management: Filter - Available (${filtered.size} slots)")
-        }
-        
-        chipActive?.setOnClickListener {
-            val filtered = allSlots.filter { it.active }
-            adapter.submitList(filtered)
-            Log.d(TAG, "Slot Management: Filter - Active (${filtered.size} slots)")
-        }
-
-        // Clean up observers on dismiss
-        val dismissListener = {
-            viewModel.slotStatus.removeObserver(slotStatusObserver)
-            viewModel.slotStationName.removeObserver(stationNameObserver)
-            viewModel.isLoading.removeObserver(loadingObserver)
-            viewModel.slotUpdateResult.removeObserver(slotUpdateObserver)
-            Log.d(TAG, "Slot Management: Dialog dismissed, observers removed")
-        }
-
-        btnClose?.setOnClickListener { 
-            slotManagementDialog?.dismiss()
-            dismissListener()
-        }
-        btnClose2?.setOnClickListener { 
-            slotManagementDialog?.dismiss()
-            dismissListener()
-        }
-        btnRefresh?.setOnClickListener { 
-            viewModel.fetchSlotStatus(stationId)
-            Toast.makeText(context, "🔄 Refreshing slots...", Toast.LENGTH_SHORT).show()
-            Log.d(TAG, "Slot Management: Refresh requested")
-        }
-        
-        slotManagementDialog?.setOnDismissListener {
-            dismissListener()
-        }
-
-        // Initial load
-        Log.d(TAG, "Slot Management: Fetching slot status for station $stationId")
-        viewModel.fetchSlotStatus(stationId)
-        slotManagementDialog?.show()
-    }
-
     private fun setupClickListeners() {
         // Quick Booking Feature - Updated Flow
         binding.btnQuickBooking.setOnClickListener {
@@ -348,11 +171,6 @@ class HomeFragment : Fragment() {
             } else {
                 Toast.makeText(context, "⚠️ Station ID not found. Please login again.", Toast.LENGTH_LONG).show()
             }
-        }
-        
-        // Slot Management Feature (Separate)
-        binding.btnSlotManagement.setOnClickListener {
-            showSlotManagementDialog()
         }
     }
 
@@ -647,7 +465,6 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         quickBookingDialog?.dismiss()
         bookingSuccessDialog?.dismiss()
-        slotManagementDialog?.dismiss()
         _binding = null
     }
 }
